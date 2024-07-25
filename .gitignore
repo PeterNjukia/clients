@@ -53,7 +53,7 @@ typings/
 
 # Gatsby files
 .cache/
-public
+publicz
 
 # vuepress build output
 .vuepress/dist

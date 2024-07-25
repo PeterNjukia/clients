@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clients</title>
+    <style>
+        table {
+            width: 60%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Client List</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Message</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody id="client-table-body">
+        </tbody>
+    </table>
+
+    <script>
+        fetch('http://localhost:8085/api/clients')
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.getElementById('client-table-body');
+                data.forEach(client => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${client.id}</td>
+                        <td>${client.name}</td>
+                        <td>${client.email}</td>
+                        <td>${client.phone}</td>
+                        <td>${client.message}</td>
+                        <td>${client.date}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => console.error('Error fetching clients:', error));
+    </script>
+</body>
+</html>
