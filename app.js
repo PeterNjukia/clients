@@ -2,10 +2,10 @@ const express = require('express');
 const mysql = require('mysql2');
 const path = require('path');
 const bodyParser = require('body-parser');
-require('dotenv').config(); // Load environment variables from .env file
+require('dotenv').config();
 
 const app = express();
-const port = process.env.PORT || 3000; // Default port to 3000 if PORT is not defined in .env
+const port = process.env.PORT || 3000;
 
 const connection = mysql.createConnection({
     host: process.env.DB_HOST,
@@ -19,8 +19,8 @@ connection.connect(err => {
     console.log('Connected to MySQL Database');
 });
 
-app.use(express.static(path.join(__dirname, 'public'))); // Serve static files from the 'public' directory
-app.use(bodyParser.json()); // Parse JSON bodies
+app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/clients', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -35,11 +35,11 @@ app.get('/api/clients', (req, res) => {
 });
 
 app.post('/api/clients', (req, res) => {
-    const { name, email, phone, message } = req.body;
-    const query = 'INSERT INTO clients (name, email, phone, message) VALUES (?, ?, ?, ?)';
-    connection.query(query, [name, email, phone, message], (err, result) => {
+    const { tenant_name, phone, house_number, comments, rent_paid } = req.body;
+    const query = 'INSERT INTO clients (tenant_name, phone, house_number, comments, rent_paid) VALUES (?, ?, ?, ?, ?)';
+    connection.query(query, [tenant_name, phone, house_number, comments, rent_paid], (err, result) => {
         if (err) throw err;
-        res.json({ id: result.insertId, name, email, phone, message });
+        res.json({ id: result.insertId, tenant_name, phone, house_number, comments, rent_paid, date: new Date() });
     });
 });
 
@@ -48,17 +48,17 @@ app.delete('/api/clients/:id', (req, res) => {
     const query = 'DELETE FROM clients WHERE id = ?';
     connection.query(query, [id], (err, result) => {
         if (err) throw err;
-        res.json({ message: 'Client deleted successfully' });
+        res.json({ success: true });
     });
 });
 
 app.put('/api/clients/:id', (req, res) => {
     const { id } = req.params;
-    const { name, email, phone, message } = req.body;
-    const query = 'UPDATE clients SET name = ?, email = ?, phone = ?, message = ? WHERE id = ?';
-    connection.query(query, [name, email, phone, message, id], (err, result) => {
+    const { tenant_name, phone, house_number, comments, rent_paid } = req.body;
+    const query = 'UPDATE clients SET tenant_name = ?, phone = ?, house_number = ?, comments = ?, rent_paid = ? WHERE id = ?';
+    connection.query(query, [tenant_name, phone, house_number, comments, rent_paid, id], (err, result) => {
         if (err) throw err;
-        res.json({ message: 'Client updated successfully' });
+        res.json({ success: true });
     });
 });
 

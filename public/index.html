@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clients</title>
+    <title>254apps</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             color: #333;
-            margin: 0;
+            margin: 10;
+            border-left: #00796b;
             padding: 0;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
+            min-height: 120vh;
         }
 
         header {
@@ -52,7 +53,7 @@
             display: flex;
             justify-content: space-between;
             width: 100%;
-            max-width: 1200px;
+            max-width: 1400px;
         }
 
         .section {
@@ -65,7 +66,7 @@
         }
 
         .form-section {
-            max-width: 400px;
+            max-width: 300px;
             margin-right: 20px;
         }
 
@@ -98,7 +99,7 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 12px;
         }
 
         button:hover {
@@ -108,6 +109,7 @@
         table {
             width: 100%;
             border-collapse: collapse;
+            font-size: small;
             margin: 20px 0;
         }
 
@@ -129,29 +131,6 @@
             background-color: #f9f9f9;
         }
 
-        td button {
-            background-color: #f44336;
-            padding: 5px 10px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            color: white;
-            font-size: 14px;
-            margin: 0 5px;
-        }
-
-        td button:hover {
-            background-color: #d32f2f;
-        }
-
-        td button.edit {
-            background-color: #4CAF50;
-        }
-
-        td button.edit:hover {
-            background-color: #388E3C;
-        }
-
         footer {
             background-color: #009688;
             color: white;
@@ -162,43 +141,46 @@
 </head>
 <body>
     <header>
-        <h1>TechJasiri Client Management</h1>
+        <h1>Rent Management Platform.</h1>
     </header>
 
     <nav>
         <a href="#">Home</a>
         <a href="#">Clients</a>
         <a href="#">Reports</a>
-        <a href="#">Settings</a>
+        <a href="#">Contacts</a>
     </nav>
 
     <div class="container">
         <div class="content">
             <section class="section form-section">
-                <h2>Add New Client</h2>
+                <h2>Pick New Rent:</h2>
                 <form id="add-client-form">
-                    <label for="name">Name:</label>
-                    <input type="text" id="name" name="name" required>
-                    <label for="email">Email:</label>
-                    <input type="email" id="email" name="email" required>
+                    <label for="tenant_name">Tenant Name:</label>
+                    <input type="text" id="tenant_name" name="tenant_name" required>
                     <label for="phone">Phone:</label>
                     <input type="tel" id="phone" name="phone" required>
-                    <label for="message">Message:</label>
-                    <textarea id="message" name="message" required></textarea>
-                    <button type="submit">Add Client</button>
+                    <label for="house_number">House Number:</label>
+                    <input type="text" id="house_number" name="house_number" required>
+                    <label for="comments">Comments:</label>
+                    <textarea id="comments" name="comments" required></textarea>
+                    <label for="rent_paid">Rent Paid:</label>
+                    <input type="number" id="rent_paid" name="rent_paid" required>
+                    <button type="submit">submit</button>
                 </form>
             </section>
 
             <section class="section table-section">
-                <h2>Existing Clients</h2>
+                <h2>Rental Payment Records:</h2>
                 <table>
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Name</th>
-                            <th>Email</th>
+                            <th>Tenant Name</th>
                             <th>Phone</th>
-                            <th>Message</th>
+                            <th>House Number</th>
+                            <th>Comments</th>
+                            <th>Rent Paid</th>
                             <th>Date</th>
                             <th>Actions</th>
                         </tr>
@@ -216,93 +198,118 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const clientTableBody = document.getElementById('client-table-body');
+            // Fetch and display existing clients
+            fetch('http://localhost:8085/api/clients')
+                .then(response => response.json())
+                .then(data => {
+                    const tableBody = document.getElementById('client-table-body');
+                    data.forEach(client => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${client.id}</td>
+                            <td>${client.tenant_name}</td>
+                            <td>${client.phone}</td>
+                            <td>${client.house_number}</td>
+                            <td>${client.comments}</td>
+                            <td>${client.rent_paid}</td>
+                            <td>${client.date}</td>
+                            <td>
+                                <button onclick="deleteClient(${client.id})">Delete</button>
+                                <button onclick="updateClient(${client.id})">Update</button>
+                            </td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Error fetching clients:', error));
 
-            // Fetch and display clients
-            function fetchClients() {
-                fetch('/api/clients')
-                    .then(response => response.json())
-                    .then(data => {
-                        clientTableBody.innerHTML = '';
-                        data.forEach(client => {
-                            const row = document.createElement('tr');
-                            row.innerHTML = `
-                                <td>${client.id}</td>
-                                <td>${client.name}</td>
-                                <td>${client.email}</td>
-                                <td>${client.phone}</td>
-                                <td>${client.message}</td>
-                                <td>${client.date}</td>
-                                <td>
-                                    <button onclick="deleteClient(${client.id})">Delete</button>
-                                    <button class="edit" onclick="editClient(${client.id}, '${client.name}', '${client.email}', '${client.phone}', '${client.message}')">Edit</button>
-                                </td>
-                            `;
-                            clientTableBody.appendChild(row);
-                        });
-                    })
-                    .catch(error => console.error('Error fetching clients:', error));
-            }
-
-            fetchClients();
-
-            // Handle add client form submission
+            // Handle form submission
             document.getElementById('add-client-form').addEventListener('submit', function(event) {
                 event.preventDefault();
-
                 const formData = new FormData(event.target);
-                const data = Object.fromEntries(formData.entries());
+                const clientData = {};
+                formData.forEach((value, key) => {
+                    clientData[key] = value;
+                });
 
-                fetch('/api/clients', {
+                fetch('http://localhost:8085/api/clients', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify(data)
+                    body: JSON.stringify(clientData)
                 })
                 .then(response => response.json())
-                .then(client => {
-                    fetchClients();
+                .then(newClient => {
+                    const tableBody = document.getElementById('client-table-body');
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${newClient.id}</td>
+                        <td>${newClient.tenant_name}</td>
+                        <td>${newClient.phone}</td>
+                        <td>${newClient.house_number}</td>
+                        <td>${newClient.comments}</td>
+                        <td>${newClient.rent_paid}</td>
+                        <td>${newClient.date}</td>
+                        <td>
+                            <button onclick="deleteClient(${newClient.id})">Delete</button>
+                            <button onclick="updateClient(${newClient.id})">Update</button>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
                     event.target.reset();
                 })
                 .catch(error => console.error('Error adding client:', error));
             });
+        });
 
-            // Delete client
-            window.deleteClient = function(id) {
-                fetch(`/api/clients/${id}`, {
-                    method: 'DELETE'
+        // Delete client
+        function deleteClient(id) {
+            fetch(`http://localhost:8085/api/clients/${id}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(() => {
+                const row = document.querySelector(`tr[data-id="${id}"]`);
+                if (row) {
+                    row.remove();
+                }
+            })
+            .catch(error => console.error('Error deleting client:', error));
+        }
+
+        // Update client
+        function updateClient(id) {
+            const tenant_name = prompt("Enter new tenant name:");
+            const phone = prompt("Enter new phone number:");
+            const house_number = prompt("Enter new house number:");
+            const comments = prompt("Enter new comments:");
+            const rent_paid = prompt("Enter new rent paid:");
+
+            if (tenant_name && phone && house_number && comments && rent_paid) {
+                const updatedData = { tenant_name, phone, house_number, comments, rent_paid };
+
+                fetch(`http://localhost:8085/api/clients/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(updatedData)
                 })
                 .then(response => response.json())
                 .then(() => {
-                    fetchClients();
+                    const row = document.querySelector(`tr[data-id="${id}"]`);
+                    if (row) {
+                        row.children[1].innerText = tenant_name;
+                        row.children[2].innerText = phone;
+                        row.children[3].innerText = house_number;
+                        row.children[4].innerText = comments;
+                        row.children[5].innerText = rent_paid;
+                    }
                 })
-                .catch(error => console.error('Error deleting client:', error));
+                .catch(error => console.error('Error updating client:', error));
             }
-
-            // Edit client
-            window.editClient = function(id, name, email, phone, message) {
-                const newName = prompt('Enter new name:', name);
-                const newEmail = prompt('Enter new email:', email);
-                const newPhone = prompt('Enter new phone:', phone);
-                const newMessage = prompt('Enter new message:', message);
-
-                if (newName && newEmail && newPhone && newMessage) {
-                    fetch(`/api/clients/${id}`, {
-                        method: 'PUT',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ name: newName, email: newEmail, phone: newPhone, message: newMessage })
-                    })
-                    .then(response => response.json())
-                    .then(() => {
-                        fetchClients();
-                    })
-                    .catch(error => console.error('Error updating client:', error));
-                }
-            }
-        });
+        }
     </script>
 </body>
 </html>
