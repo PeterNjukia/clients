@@ -5,55 +5,304 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clients</title>
     <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #009688;
+            color: white;
+            padding: 15px 20px;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #00796b;
+        }
+
+        nav a {
+            color: white;
+            padding: 14px 20px;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        nav a:hover {
+            background-color: #004d40;
+        }
+
+        .container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .content {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .section {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin: 10px;
+            flex: 1;
+        }
+
+        .form-section {
+            max-width: 400px;
+            margin-right: 20px;
+        }
+
+        .table-section {
+            flex: 2;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin: 5px 0 5px 0;
+            font-weight: bold;
+        }
+
+        input, textarea {
+            padding: 10px;
+            margin: 5px 0 15px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #009688;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #00796b;
+        }
+
         table {
-            width: 60%;
+            width: 100%;
             border-collapse: collapse;
+            margin: 20px 0;
         }
+
         table, th, td {
-            border: 1px solid black;
+            border: 1px solid #ddd;
         }
+
         th, td {
-            padding: 8px;
+            padding: 12px;
             text-align: left;
+        }
+
+        th {
+            background-color: #009688;
+            color: white;
+        }
+
+        td {
+            background-color: #f9f9f9;
+        }
+
+        td button {
+            background-color: #f44336;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            color: white;
+            font-size: 14px;
+            margin: 0 5px;
+        }
+
+        td button:hover {
+            background-color: #d32f2f;
+        }
+
+        td button.edit {
+            background-color: #4CAF50;
+        }
+
+        td button.edit:hover {
+            background-color: #388E3C;
+        }
+
+        footer {
+            background-color: #009688;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
         }
     </style>
 </head>
 <body>
-    <h1>Client List</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Message</th>
-                <th>Date</th>
-            </tr>
-        </thead>
-        <tbody id="client-table-body">
-        </tbody>
-    </table>
+    <header>
+        <h1>TechJasiri Client Management</h1>
+    </header>
+
+    <nav>
+        <a href="#">Home</a>
+        <a href="#">Clients</a>
+        <a href="#">Reports</a>
+        <a href="#">Settings</a>
+    </nav>
+
+    <div class="container">
+        <div class="content">
+            <section class="section form-section">
+                <h2>Add New Client</h2>
+                <form id="add-client-form">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" name="name" required>
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" required>
+                    <label for="phone">Phone:</label>
+                    <input type="tel" id="phone" name="phone" required>
+                    <label for="message">Message:</label>
+                    <textarea id="message" name="message" required></textarea>
+                    <button type="submit">Add Client</button>
+                </form>
+            </section>
+
+            <section class="section table-section">
+                <h2>Existing Clients</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Message</th>
+                            <th>Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="client-table-body">
+                    </tbody>
+                </table>
+            </section>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 TechJasiri. All rights reserved.</p>
+    </footer>
 
     <script>
-        fetch('http://localhost:8085/api/clients')
-            .then(response => response.json())
-            .then(data => {
-                const tableBody = document.getElementById('client-table-body');
-                data.forEach(client => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${client.id}</td>
-                        <td>${client.name}</td>
-                        <td>${client.email}</td>
-                        <td>${client.phone}</td>
-                        <td>${client.message}</td>
-                        <td>${client.date}</td>
-                    `;
-                    tableBody.appendChild(row);
-                });
-            })
-            .catch(error => console.error('Error fetching clients:', error));
+        document.addEventListener('DOMContentLoaded', function() {
+            const clientTableBody = document.getElementById('client-table-body');
+
+            // Fetch and display clients
+            function fetchClients() {
+                fetch('/api/clients')
+                    .then(response => response.json())
+                    .then(data => {
+                        clientTableBody.innerHTML = '';
+                        data.forEach(client => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${client.id}</td>
+                                <td>${client.name}</td>
+                                <td>${client.email}</td>
+                                <td>${client.phone}</td>
+                                <td>${client.message}</td>
+                                <td>${client.date}</td>
+                                <td>
+                                    <button onclick="deleteClient(${client.id})">Delete</button>
+                                    <button class="edit" onclick="editClient(${client.id}, '${client.name}', '${client.email}', '${client.phone}', '${client.message}')">Edit</button>
+                                </td>
+                            `;
+                            clientTableBody.appendChild(row);
+                        });
+                    })
+                    .catch(error => console.error('Error fetching clients:', error));
+            }
+
+            fetchClients();
+
+            // Handle add client form submission
+            document.getElementById('add-client-form').addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const formData = new FormData(event.target);
+                const data = Object.fromEntries(formData.entries());
+
+                fetch('/api/clients', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(client => {
+                    fetchClients();
+                    event.target.reset();
+                })
+                .catch(error => console.error('Error adding client:', error));
+            });
+
+            // Delete client
+            window.deleteClient = function(id) {
+                fetch(`/api/clients/${id}`, {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(() => {
+                    fetchClients();
+                })
+                .catch(error => console.error('Error deleting client:', error));
+            }
+
+            // Edit client
+            window.editClient = function(id, name, email, phone, message) {
+                const newName = prompt('Enter new name:', name);
+                const newEmail = prompt('Enter new email:', email);
+                const newPhone = prompt('Enter new phone:', phone);
+                const newMessage = prompt('Enter new message:', message);
+
+                if (newName && newEmail && newPhone && newMessage) {
+                    fetch(`/api/clients/${id}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ name: newName, email: newEmail, phone: newPhone, message: newMessage })
+                    })
+                    .then(response => response.json())
+                    .then(() => {
+                        fetchClients();
+                    })
+                    .catch(error => console.error('Error updating client:', error));
+                }
+            }
+        });
     </script>
 </body>
 </html>
