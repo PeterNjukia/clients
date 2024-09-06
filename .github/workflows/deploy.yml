@@ -1,0 +1,49 @@
+name: Deploy Express and Frontend
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '18.15.0'
+
+    - name: Deploy to server
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        HOST: ${{ secrets.HOST }}
+        USERNAME: ${{ secrets.USERNAME }}
+      run: |
+        # Start the SSH agent and add the private key
+        eval "$(ssh-agent -s)"
+        echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+        
+        # Connect to the server and execute deployment steps
+        ssh -o StrictHostKeyChecking=no $USERNAME@$HOST << 'EOF'
+          set -e # Exit if any command fails
+
+          # Go to the backend project directory and pull the latest code
+          cd /home/kenya123/codeLabs/clients/ # Adjust to your project root
+          git pull origin master
+          npm install --production
+          
+          # Restart the backend using systemd
+          sudo systemctl restart myclients.service
+          sudo systemctl status myclients.service # Optional: Check status for debugging
+          
+          # Optionally update frontend files and reload Nginx
+          # cd /path/to/your/frontend/files
+          # git pull origin main
+          # sudo cp -R * /var/www/your-nginx-site-root
+          # sudo systemctl reload nginx
+        EOF
