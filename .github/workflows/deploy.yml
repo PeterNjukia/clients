@@ -18,17 +18,22 @@ jobs:
       with:
         node-version: '18.15.0'
 
+    - name: Set up SSH agent
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y openssh-client
+        mkdir -p ~/.ssh
+        echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan -H $HOST >> ~/.ssh/known_hosts
+        eval "$(ssh-agent -s)"
+        ssh-add ~/.ssh/id_rsa
+
     - name: Deploy to server
       env:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         HOST: ${{ secrets.HOST }}
         USERNAME: ${{ secrets.USERNAME }}
       run: |
-        # Start the SSH agent and add the private key
-        eval "$(ssh-agent -s)"
-        echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-        
-        # Connect to the server and execute deployment steps
         ssh -o StrictHostKeyChecking=no $USERNAME@$HOST << 'EOF'
           set -e # Exit if any command fails
 
@@ -40,5 +45,6 @@ jobs:
           # Restart the backend using systemd
           sudo systemctl restart myclients.service
           sudo systemctl status myclients.service # Optional: Check status for debugging
-        
+
+         
         EOF
