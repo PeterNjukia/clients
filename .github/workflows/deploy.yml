@@ -40,10 +40,5 @@ jobs:
           # Restart the backend using systemd
           sudo systemctl restart myclients.service
           sudo systemctl status myclients.service # Optional: Check status for debugging
-          
-          # Optionally update frontend files and reload Nginx
-          # cd /path/to/your/frontend/files
-          # git pull origin main
-          # sudo cp -R * /var/www/your-nginx-site-root
-          # sudo systemctl reload nginx
+        
         EOF
