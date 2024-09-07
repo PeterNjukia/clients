@@ -26,9 +26,8 @@ jobs:
         echo "$SSH_PRIVATE_KEY" | tr -d '\r' > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
 
-        # Ensure the known_hosts file is empty to avoid appending to old keys
-        > ~/.ssh/known_hosts
-        ssh-keyscan -H $HOST >> ~/.ssh/known_hosts
+        # Use ssh-keyscan to add the server to known_hosts
+        ssh-keyscan -H ${{ secrets.HOST }} >> ~/.ssh/known_hosts
 
         eval "$(ssh-agent -s)"
         ssh-add ~/.ssh/id_rsa
