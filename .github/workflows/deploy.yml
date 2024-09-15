@@ -16,7 +16,7 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '20.x' # Specify the Node.js version if needed
+        node-version: '18.x'
 
     - name: Set up SSH agent
       run: |
@@ -36,10 +36,10 @@ jobs:
         USERNAME: ${{ secrets.USERNAME }}
       run: |
         ssh -o StrictHostKeyChecking=no $USERNAME@$HOST << 'EOF'
-          set -e # Exit if any command fails
+          set -e
 
           # Go to the backend project directory and pull the latest code
-          cd /home/kenya123/codeLabs/clients/ # Adjust to your project root
+          cd /home/kenya123/codeLabs/clients/
           git pull origin master
           npm install --production
           
