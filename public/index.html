@@ -9,12 +9,12 @@
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             color: #333;
-            margin: 20;
+            margin: 10;
             border-left: #00796b;
             padding: 0;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
+            min-height: 120vh;
         }
 
         header {
@@ -66,11 +66,8 @@
         }
 
         .form-section {
-            max-width: 200px;
+            max-width: 300px;
             margin-right: 20px;
-            font-size: small;
-            padding: 10px;
-            font-size: small;
         }
 
         .table-section {
@@ -144,7 +141,7 @@
 </head>
 <body>
     <header>
-        <h1>Rental payments Management Platform.</h1>
+        <h1>Rental Management Platform.</h1>
     </header>
 
     <nav>
@@ -174,7 +171,7 @@
             </section>
 
             <section class="section table-section">
-                <h2>Rentalel Payments Rapid Collector proper:</h2>
+                <h2>Rental Payment Records:</h2>
                 <table>
                     <thead>
                         <tr>
@@ -202,7 +199,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Fetch and display existing clients
-            fetch('http://localhost:8085/api/clients')
+            fetch('http://41.90.18.253:8085/api/clients')
                 .then(response => response.json())
                 .then(data => {
                     const tableBody = document.getElementById('client-table-body');
@@ -235,7 +232,7 @@
                     clientData[key] = value;
                 });
 
-                fetch('http://localhost:8085/api/clients', {
+                fetch('http://41.90.18.253:8085/api/clients', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -268,7 +265,7 @@
 
         // Delete client
         function deleteClient(id) {
-            fetch(`http://localhost:8085/api/clients/${id}`, {
+            fetch(`http://41.90.18.253:8085/api/clients/${id}`, {
                 method: 'DELETE'
             })
             .then(response => response.json())
@@ -292,7 +289,7 @@
             if (tenant_name && phone && house_number && comments && rent_paid) {
                 const updatedData = { tenant_name, phone, house_number, comments, rent_paid };
 
-                fetch(`http://localhost:8085/api/clients/${id}`, {
+                fetch(`http://41.90.18.253:8085/api/clients/${id}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
