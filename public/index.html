@@ -193,13 +193,13 @@
     </div>
 
     <footer>
-        <p>&copy; 2024 TechJasiri. All rights reserved.</p>
+        <p>&copy;Clickafa Technologies @2024. All rights reserved.</p>
     </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Fetch and display existing clients
-            fetch('http://41.90.18.253:8085/api/clients')
+            fetch('http://clickafa.com:8085/api/clients')
                 .then(response => response.json())
                 .then(data => {
                     const tableBody = document.getElementById('client-table-body');
@@ -232,7 +232,7 @@
                     clientData[key] = value;
                 });
 
-                fetch('http://41.90.18.253:8085/api/clients', {
+                fetch('http://clickafa.com:8085/api/clients', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -265,7 +265,7 @@
 
         // Delete client
         function deleteClient(id) {
-            fetch(`http://41.90.18.253:8085/api/clients/${id}`, {
+            fetch(`http://clickafa.com:8085/api/clients/${id}`, {
                 method: 'DELETE'
             })
             .then(response => response.json())
@@ -289,7 +289,7 @@
             if (tenant_name && phone && house_number && comments && rent_paid) {
                 const updatedData = { tenant_name, phone, house_number, comments, rent_paid };
 
-                fetch(`http://41.90.18.253:8085/api/clients/${id}`, {
+                fetch(`http://clickafa.com:8085/api/clients/${id}`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json'
