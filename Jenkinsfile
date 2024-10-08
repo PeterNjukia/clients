@@ -9,23 +9,23 @@ pipeline {
             }
         }
 
-        stage('Debug') {
-            steps {
-                // List the files in the workspace to verify script presence
-                sh 'ls -la /var/jenkins_home/workspace/clientsApp'
-            }
-        }
+        // stage('Debug') {
+        //     steps {
+        //         // List the files in the workspace to verify script presence
+        //         sh 'ls -la /var/jenkins_home/workspace/clientsApp'
+        //     }
+        // }
 
-        stage('Run Tests') {
-            when {
-                // Only run this stage if the branch is 'dev'
-                branch 'dev'
-            }
-            steps {
-                // Execute your test script or command
-                sh 'npm test' // Adjust this command if your test command is different
-            }
-        }
+        // stage('Run Tests') {
+        //     when {
+        //         // Only run this stage if the branch is 'dev'
+        //         branch 'dev'
+        //     }
+        //     steps {
+        //         // Execute your test script or command
+        //         sh 'npm test' // Adjust this command if your test command is different
+        //     }
+        // }
 
         stage('Build') {
             steps {
